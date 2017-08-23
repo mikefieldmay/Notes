@@ -329,3 +329,306 @@ suggestUserName() {
 ```
 
 *Using Form Data*
+
+We can create an empty object in our component and assign the form values to that object on submit. e.g
+```
+user = {
+    username: '',
+    email: '',
+    secretQuestion: '',
+    secretAnswer: '',
+    gender: ''
+  };
+  submitted = false;
+
+  onSubmit() {
+    this.submitted = true;
+    this.user.username = this.signUpForm.value.userData.username;
+    this.user.email = this.signUpForm.value.userData.email;
+    this.user.secretQuestion = this.signUpForm.value.secret;
+    this.user.secretAnswer = this.signUpForm.value.questionAnswer;
+    this.user.gender = this.signUpForm.value.gender;
+  }
+```
+
+*Resetting the form*
+We can quite easily reset the form by calling `this.signUpForm.reset();`. This can be passed the same object that we pass to the value method in order to reset only specific values.
+
+**Reactive Forms**
+
+With a reactive form, the form is created programmatically and synchronized with the DOM. We need to import the `ReactiveFormsModule` into the app.module instead of the regular `FormsModule`. We also need to create a form with the property of FormGroup within our component.
+```
+// In the app.module
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+// In the component:
+
+signUpForm: FormGroup;
+```
+
+It is good practice to initialize a form during the OnInit lifecycle hook. This can be done as so:
+```
+ngOnInit() {
+    this.signUpForm = new FormGroup({
+      'username': new FormControl(null), // wrapped in quotation marks to make sure this property is usable after minification
+      'email': new FormControl(null),
+      'gender': new FormControl('male')
+    });
+  }
+```
+`new FormGroup({})` takes an object as an argument. The object contains each of the FormControls we want to associate with the form. We initialize new FormControls with `new FormControl(null)`. The first argument the constructor takes is the default value of the form control although it can take more arguments.
+
+*Synching HTML and Form*
+
+In order to sync the form with the HTML we need to add some directives to the form.
+`<form [formGroup]="signUpForm">` overrides Angular's standard behaviour and tells it that the form group is the form that we have created in the component.
+We also add the FormControls to the input options:
+```
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signUpForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="form-control">
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+```
+
+*Submitting the form*
+
+`(ngSubmit)="onSubmit()` can be called within the form tag. We don't need to pass local references as the form is defined within the component itself.
+
+*Validation*
+
+To add validation to our form it needs to be added in the FormControl constructor.
+```
+this.signUpForm = new FormGroup({
+  'username': new FormControl(null, Validators.required), // we don't execute this method. We reference it and Angular will execute it
+  'email': new FormControl(null, [Validators.required, Validators.email]), // we can add multiple Validators in an array
+  'gender': new FormControl('male')
+});
+```
+
+*Getting access to the form controls*
+We can use the form status to display messages but we need to access the form controls differently.
+
+```
+ <span class="help-block" *ngIf="signUpForm.get('username').invalid && signUpForm.get('username').touched">Please enter a valid username</span>
+ ```
+
+ We access the FormControl's state using the get method.
+
+ *Form Groups*
+
+ We can create FormGroups using the FormGroup constructor. It can be passed into the main FormGroup constructor.
+ ```
+ // In the component
+
+ ngOnInit() {
+    this.signUpForm = new FormGroup({
+      'userData': new FormGroup({
+        'username': new FormControl(null, Validators.required),
+        'email': new FormControl(null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl('male')
+    });
+  }
+
+ // In the HTML
+
+ <div formGroupName="userData"> // we add this directive to a div that holds the formcontrols in the formgroups.
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-control">
+              <span class="help-block" *ngIf="signUpForm.get('userData.username').invalid && signUpForm.get('userData.username').touched">Please enter a valid username</span> // we need to add a relative path to the get method
+          </div>
+          <div class="form-group">
+            <label for="email">email</label>
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control">
+              <span class="help-block" *ngIf="signUpForm.get('userData.email').invalid && signUpForm.get('userData.email').touched">Please enter a valid email</span>
+          </div>
+        </div>
+ ```
+
+*Arrays of FormControls*
+
+We can dynamically add form controls using FormArray. A FormArray holds an array of FormControls which can be iterated through in order to display new form controls. It is good if we want to add new FormControls dynamically.
+```
+// In the component:
+
+getControls(): AbstractControl[] {
+    return (<FormArray>this.signUpForm.get('hobbies')).controls;
+}
+
+ngOnInit() {
+   this.signUpForm = new FormGroup({
+     'userData': new FormGroup({
+       'username': new FormControl(null, Validators.required),
+       'email': new FormControl(null, [Validators.required, Validators.email]),
+     }),
+     'gender': new FormControl('male'),
+     'hobbies': new FormArray([]) // A form array holds an array of controls
+   });
+ }
+
+ onSubmit(){
+   console.log(this.signUpForm);
+
+ }
+
+ onAddHobby(){
+   const control = new FormControl(null, Validators.required);
+   (<FormArray>this.signUpForm.get('hobbies')).push(control); // we have to explicitly tell typescript that this is a FormArray be casting it
+ }
+
+ // In the HTML
+
+ <div formArrayName="hobbies">
+  <h4>Your Hobbies</h4>
+  <button
+    class="btn btn-default"
+    type='button'
+    (click)="onAddHobby()">Add Hobby</button>
+    <div
+      class="form-group"
+      *ngFor="let hobbyControl of getControls(); let i = index">
+      <input type="text" class="form-control" [formControlName]="i">
+    </div> // we have to generate a formcontrol name using i
+</div>
+```
+
+*Creating Custom Validators*
+
+We can cover most of our use cases with the built in validators, but just in case, we are able to create our own custom validators.
+A validator is essentially a method and we can easily create our own:
+```
+ngOnInit() {
+    this.signUpForm = new FormGroup({
+      'userData': new FormGroup({
+        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]), // we need to bind this for our function to work properly
+        'email': new FormControl(null, [Validators.required, Validators.email]),
+      }),
+      'gender': new FormControl('male'),
+      'hobbies': new FormArray([]) // A form array holds an array of controls
+    });
+  }
+
+forbiddenNames(control: FormControl): {[s: string]: boolean} {
+  if (this.forbiddenUsernames.indexOf(control.value) !== -1) { // we need to check that it is not equal to -1. This is because if it doesn't exist in the array, it's index is -1 which evaluates to true
+    return {'nameIsForbidden': true}
+  }
+  return null;
+}
+```
+
+*Using Error Codes*
+Angular adds the error codes to the individual controls on the errors object.
+```
+<span class="help-block" *ngIf="signUpForm.get('userData.username').invalid && signUpForm.get('userData.username').touched">
+  <span class="help-block" *ngIf="signUpForm.get('userData.username').errors['nameIsForbidden']">Name is invalid</span>
+  <span class="help-block" *ngIf="signUpForm.get('userData.username').errors['required']">Name is required</span>
+</span>
+```
+You can display messages based on the errors you receive.
+
+*Creating custom Async Validators*
+
+Sometimes we may need to reach out to a web server to see if a username is taken or not. We can create such async validators.
+
+We add async validators as a third element that is passed to form control:
+```
+'email': new FormControl(null // initial value, [Validators.required, Validators.email] // regular validators, this.forbiddenEmails // async validators),
+
+forbiddenEmails(control: FormControl): Promise<any> | Observable<any> {
+   const promise = new Promise<any>((resolve, reject) => {
+     setTimeout(() => {
+       if (control.value === 'test@test.com') {
+         resolve({'emailIsForbidden': true });
+       } else {
+         resolve(null);
+       }
+     }, 1500)
+   })
+   return promise;
+ }
+```
+
+*Reacting to status or value changes*
+We saw that when using asynchronous validators, the form control changes from invalid to pending to valid. We can detect formstate with an observable.  `this.signupForm.statusChanges` and `this.signupForm.valueChanges`
+
+```
+ngOnInit() {
+   this.signUpForm = new FormGroup({
+     'userData': new FormGroup({
+       'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+       'email': new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails),
+     }),
+     'gender': new FormControl('male'),
+     'hobbies': new FormArray([]) // A form array holds an array of controls
+   });
+   // this.signUpForm.valueChanges
+   //   .subscribe(
+   //     (value) => console.log(value)
+   //   )
+   this.signUpForm.statusChanges
+     .subscribe(
+       (value) => console.log(value)
+     )
+ }
+```
+You can also subscribe to specific form controls using get.
+
+*Setting and patching values*
+`setValue()` and `patchValue()` methods are also available. We need to pass in an object that resembles the form object. We can also pass an object to reset.

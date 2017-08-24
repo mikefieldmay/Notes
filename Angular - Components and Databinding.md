@@ -253,7 +253,7 @@ This can happen on any events as change detection occurs.
 - ngAfterContentInit: Called after content (ng-content) has been projected into view
 - ngAfterCintentChecked: Called every time the projected content has changed
 - ngAfterViewInit: Called after the component's view (and child views) has been initialised (after the view is rendered)
-- ngAfterViewChecked: Called everytime the views (and child views) have been initialised
+- ngAfterViewChecked: Called every time the views (and child views) have been initialised
 - ngOnDestroy: Called once the component is about to be destroyed
 
 Templates cannot be accessed before the view has been initialised. It works from AfterViewInit onwards.

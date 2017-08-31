@@ -12,7 +12,7 @@ We can use property and event binding on:
 By default all properties of components are only accessible within the component.
 
 *Passing data down*
-If you want properties of a child parent to be accessible from the parent you need to use the `@Input()` decorator.
+If you want properties of a child to be accessible from the parent you need to use the `@Input()` decorator.
 
 ```
 <div class="container">
@@ -22,7 +22,8 @@ If you want properties of a child parent to be accessible from the parent you ne
     <div class="col-xs-12">
       <app-server-element
         *ngFor="let serverElement of serverElements"
-        [element]="serverElement"></app-server-element>
+        [element]="serverElement"
+        ></app-server-element>
         // because we have used the input decorator, we can access the element property of this component.
       </div>
     </div>

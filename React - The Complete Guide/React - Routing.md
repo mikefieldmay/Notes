@@ -163,3 +163,78 @@ React router makes it easy to extract the fragment. You can simply access props.
 It has forward, backward and push methods which allow you to navigate. You can push routes to the top of the stack to navigate to new pages.
 
 `this.props.history.push({pathname: `/${id}`})`
+
+Push pushes the page onto the stack, but redirect replaces the place on the stack so back will not return you to the previous page.
+
+## Navigation Guards
+
+A typical guard is used when you may not know if a user is authenticated or not and y9ou want to prevent a user from accessing the page. Because everything is javascript you can do something fairly simple like:
+
+```
+{ this.state.auth ? <Route path="/new-post" component={NewPost} /> : null}
+```
+
+The Redirect component will catch the route if nothing is rendered. You could also add this check in the component will mount lifecycle hook of the conditionally rendered component. 
+
+## Catching unknown routes
+```
+<Switch>
+    { this.state.auth ? <Route path="/new-post" component={NewPost} /> : null}
+    <Route path="/posts" component={Posts} />
+    <Redirect from="/" to="/posts" />
+</Switch>
+```
+Redirect will catch unknown requests. 
+
+An alternative is to create a component without a path that catches any paths that don't have components:
+`<Route render={() => <h1>Not found</h1>}`
+
+## Lazy Loading routes
+
+Lazy loading or code splitting are implemented in React using React Router 4 adn the webpack config. 
+It should work in any other decently set up webpack project. 
+
+```
+// AsyncComponent.js
+
+import React, { Component } from 'react';
+
+const asyncComponent = (importComponent) => {
+    return class extends Component {
+        state = {
+            component = null
+        }
+
+        componentDidMount() {
+            importComponent() // promise that resolves to the default export of the imported module
+                .then(cmp => {
+                    this.setState({component: cmp.default})
+                });
+        }
+
+        render () {
+            const c = this.state.component
+            return C ? <C {...this.props} /> : null;
+        }
+    }
+}
+
+// Blog.js
+
+const asyncNewPosts = asyncComponent(() => import('../NewPost/NewPost')) // we dynamically import the contents of new post whihch renders when the import() promise resolves.
+
+```
+
+## Routing and the Server
+
+When a user sends a request to the server, the server renders the index.html page. The issue is, it's the react app that handles the routes which aren't even rendered yet. We need to configure the server ina  way that always forwards requests (even for unknown requests). This is set up in the development server of a create react project. You also need to set the base path for the app router. You can configure that in the BrowserRouter component:
+```
+<BrowserRouter pathname='/my-app'>
+    <div className="App">
+        <Blog />
+    </div>
+    </BrowserRouter>  
+```
+If you're serving an app from a subdirectory, make sure you setup basename.
+
+React Router Docs: https://reacttraining.com/react-router/web/guides/philosophy

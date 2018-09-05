@@ -135,3 +135,10 @@ div p {
 }
 ```
 Direct selectors show a slightly better performance, but general combinators tend to be the most frequently used.
+
+### Values:
+Values are tightly coupled to css properties. There are (loosely) 4 types of vaklue:
+- Pre-defined. These have a few specific options that you can choose from.
+- Colors: let you work with names or hex codes
+- Length sizes and numbers: pixels, percentages or just numbers
+- Functions: Background: url(), transfrom: scale();

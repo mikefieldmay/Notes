@@ -16,7 +16,7 @@ ng serve --port YOURPORT // will change the port number
 All the code is written in the App folder. The assets folder stores images/data and any environmental variables are stored in environments.
 When creating a new file it's a good idea to install bootstrap aswell.
 `npm install --save bootstrap`
-We then need to import bootstrap into the angular-cli.json file. The cli uses webpack bundles the files and adds them to the index.html file. Add `../node_modules/bootstrap/dist/css/bootstrap.min.css`
+We then need to import bootstrap into the angular-cli.json file. The cli uses webpack bundles the files and adds them to the index.html file. Add `../node_modules/bootstrap/dist/css/bootstrap.min.css` into the styles array.
 
 With an angular application, the index.html file is served. it has a tag for `<app-root>` which is a custom angular component.
 

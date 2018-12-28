@@ -66,7 +66,7 @@ It is possible for cells to overlap if we explicitly set the column adn row posi
 
 ### Working with named lines
 
-It is possible to give names to columns and rows. Uoi pass the name in as so:
+It is possible to give names to columns and rows. You pass the name in as so:
 ```
  .container {
       grid-template-rows: [row-1-start] 5rem [row-2-start] 4rem

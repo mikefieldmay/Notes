@@ -82,7 +82,4 @@ The `flex-basis` defines the size of an element depending on the main axis (flex
 ### flex
 `flex: 0 1 auto` is shorthand for the defaults for grow, shrink and basis.
 
-
 With flexbox we can easily change the way elements are displayed on a webpage. 
-
-### Row and Grid shorthands

@@ -62,7 +62,7 @@ const post = (props) => (
     </article>
 );
 
-export default withRouter(post); // adds router props to other components. Returnds info on the nearest loaded route.
+export default withRouter(post); // adds router props to other components. Returns info on the nearest loaded route.
 ```
 The way you right your `<Link to="/">` you can't control whether it's a relative or absolute path. It is always an absolute path.
 you can create relative paths by using the below syntax:

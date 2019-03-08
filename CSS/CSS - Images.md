@@ -73,7 +73,7 @@ It is only ever really used for a fall back, or if your higher image is transpar
 Filters allow us to change the visual appearance of an element by changing the element they are placed on. They are a quick and easy way of changing the visuals of something.
 
 ## Styling SVGs
-Two important =SVG properties are fill and stroke and stroke width.
+Two important SVG properties are fill and stroke and stroke width.
 
 ### Links: 
 The background  Property: https://developer.mozilla.org/en-US/docs/Web/CSS/background

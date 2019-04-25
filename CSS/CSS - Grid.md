@@ -11,11 +11,11 @@ Firefox offers the best debugging support for grid.
 ### Creating a grid
 
 We can turn a container into a grid by setting the `display` value to `grid`. Only direct children are considered as part of the grid. All the child components are now part of the grid. 
-`grid-template-columns` specifies the width of the columns in the grid
+`grid-template-columns` specifies the width and amount of the columns in the grid
 ```
   grid-template-columns: 200px 150px 20% 1fr;
 ```
-fr is a special unit we can use with grid. All regular units will be calculated first and then fr will work out the rest. 
+fr is a special unit we can use with grid. All regular units will be calculated first and then fr will work out the rest. It works like a fraction.
 `grid-template-rows: 5rem 10rem;` allows us to define the height of the rows we're using. 
 
 ### Positioning Child elements in a grid
@@ -150,7 +150,7 @@ fit-content takes an argument of a size. It takes a default size if the content 
 ### Positioning elements in a grid
 
 ## Justify items
-`justify-items` can be applied to a css grid. It positions the elements in their grid areas. 
+`justify-items` can be applied to a css grid. It positions the elements relative to the column in their grid areas. 
 You can set it to `start`, `middle` and `end`. The default is stretch. Start and end are not left and right, if the read setting is right to left, `start` will appear on the right.
 
 ## Align Items
@@ -222,3 +222,13 @@ if we want our content to be responsize on many different device sizes. There is
 ## Creating a Dense Grid
 
 If we want to have a specific child that is larger than the others and we use the `grid-column: span 2;` syntax without specifically declaring the columns we want to take, the space where this item is will not be filled in the grid. We can sort this out by setting the property `dense`  `grid-auto-flow: row dense;`. This will cause the grid to put in smaller child elements into the space if a smaller element appears later. It leaves the space at the end of the grid instead. This may not be optimal as it changes the visible dom order, but not the actual html so it may cause accessibility issues. 
+
+## Comparing Grid and Flexbox
+
+The key differences between the 2 are that the grid is about 2 dimensional positioning. Rows and Columns. Flexbox is one dimensional, rows or columns. Flexbox is always a decent choice if you just have a single row, or a single column. 
+The grid is a great choice is if you have a more complex layout e.g if you want to have both column and row positioning. Flexbox is excellent fi items to be next to each other or to be displayed in a column.
+1 Dimension = flexbox
+Multiple dimensions = grid.
+
+
+https://css-tricks.com/snippets/css/complete-guide-grid/

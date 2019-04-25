@@ -49,7 +49,7 @@ Webpack doesn't modify our html document directly. The css loader pushes the raw
 It is faster to load our css in a seperate file. In order to get our webpack to spit out a different file we need to install another library: `extract-text-webpack-plugin`. This takes all the text out and puts it into a different file.
 
 ```
-onst path = require('path');
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const config = {
